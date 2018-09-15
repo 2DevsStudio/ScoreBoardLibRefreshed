@@ -33,8 +33,8 @@ public class SimpleScoreboard implements Scoreboard {
 
     private boolean activated;
     private ScoreboardHandler handler;
-    private Map<FakePlayer, Integer> entryCache = new ConcurrentHashMap<>();
-    private Table<String, Integer, FakePlayer> playerCache = HashBasedTable.create();
+    private Map<me.tigerhix.lib.scoreboard.type.FakePlayer, Integer> entryCache = new ConcurrentHashMap<>();
+    private Table<String, Integer, me.tigerhix.lib.scoreboard.type.FakePlayer> playerCache = HashBasedTable.create();
     private Table<Team, String, String> teamCache = HashBasedTable.create();
     private BukkitRunnable updateTask;
 
@@ -127,7 +127,7 @@ public class SimpleScoreboard implements Scoreboard {
         // Entries
         List<Entry> passed = handler.getEntries(holder);
         Map<String, Integer> appeared = new HashMap<>();
-        Map<FakePlayer, Integer> current = new HashMap<>();
+        Map<me.tigerhix.lib.scoreboard.type.FakePlayer, Integer> current = new HashMap<>();
         if (passed == null) return;
         for (Entry entry : passed) {
             // Handle the entry
@@ -152,10 +152,10 @@ public class SimpleScoreboard implements Scoreboard {
         }
         appeared.clear();
         // Remove duplicated or non-existent entries
-        for (FakePlayer fakePlayer : entryCache.keySet()) {
+        for (me.tigerhix.lib.scoreboard.type.FakePlayer fakePlayer : entryCache.keySet()) {
             if (!current.containsKey(fakePlayer)) {
                 entryCache.remove(fakePlayer);
-                scoreboard.resetScores(fakePlayer.getName());
+                scoreboard.resetScores(String.valueOf(fakePlayer));
             }
         }
     }
@@ -198,7 +198,7 @@ public class SimpleScoreboard implements Scoreboard {
                 faker.getTeam().addPlayer(faker);
             }
         } else {
-            faker = playerCache.get(name, offset);
+            faker = (FakePlayer) playerCache.get(name, offset);
             if (team != null && faker.getTeam() != null) {
                 faker.getTeam().removePlayer(faker);
             }
@@ -218,7 +218,7 @@ public class SimpleScoreboard implements Scoreboard {
         return scoreboard;
     }
 
-    private static class FakePlayer implements OfflinePlayer {
+    private static class FakePlayer implements OfflinePlayer, me.tigerhix.lib.scoreboard.type.FakePlayer{
 
         private final String name;
 
