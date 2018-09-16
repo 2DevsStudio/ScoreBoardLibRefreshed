@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
@@ -145,6 +146,12 @@ public class SimpleScoreboard implements Scoreboard {
             // Get fake player
             FakePlayer faker = getFakePlayer(key, appeared.get(appearance));
             // Set score
+            for (String ks : scoreboard.getEntries()) {
+                if(score.equals(objective.getScore(ks).getScore()) && !objective.getScore(ks).getEntry().equals(objective.getScore(faker).getEntry())){
+                    scoreboard.resetScores(ks);
+                    break;
+                }
+            }
             objective.getScore(faker).setScore(score);
             // Update references
             entryCache.put(faker, score);
@@ -153,7 +160,7 @@ public class SimpleScoreboard implements Scoreboard {
         appeared.clear();
         // Remove duplicated or non-existent entries
         for (me.tigerhix.lib.scoreboard.type.FakePlayer fakePlayer : entryCache.keySet()) {
-            if (current.containsKey(fakePlayer)) {
+            if (!current.containsKey(fakePlayer)) {
                 entryCache.remove(fakePlayer);
                 scoreboard.resetScores(String.valueOf(fakePlayer));
             }
@@ -218,7 +225,7 @@ public class SimpleScoreboard implements Scoreboard {
         return scoreboard;
     }
 
-    private static class FakePlayer implements OfflinePlayer, me.tigerhix.lib.scoreboard.type.FakePlayer{
+    private static class FakePlayer implements OfflinePlayer, me.tigerhix.lib.scoreboard.type.FakePlayer {
 
         private final String name;
 
