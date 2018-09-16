@@ -153,7 +153,7 @@ public class SimpleScoreboard implements Scoreboard {
         appeared.clear();
         // Remove duplicated or non-existent entries
         for (me.tigerhix.lib.scoreboard.type.FakePlayer fakePlayer : entryCache.keySet()) {
-            if (!current.containsKey(fakePlayer)) {
+            if (current.containsKey(fakePlayer)) {
                 entryCache.remove(fakePlayer);
                 scoreboard.resetScores(String.valueOf(fakePlayer));
             }
